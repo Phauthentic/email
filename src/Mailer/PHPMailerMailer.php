@@ -14,13 +14,16 @@ declare(strict_types = 1);
 namespace Phauthentic\Email\Mailer;
 
 use Phauthentic\Email\EmailInterface;
-use PHPMailer as VendorPHPMailer;
+use PHPMailer\PHPMailer\PHPMailer;
 
 /**
  * PHP Mailer
  */
-class PHPMailer implements MailerInterface
+class PHPMailerMailer implements MailerInterface
 {
+    /**
+     * @var \PHPMailer\PHPMailer\PHPMailer
+     */
     protected $mailer;
 
     /**
@@ -28,7 +31,7 @@ class PHPMailer implements MailerInterface
      *
      * @param \PHPMailer $mailer PHPMailer instance
      */
-    public function __construct(VendorPHPMailer $mailer )
+    public function __construct(PHPMailer $mailer )
     {
         $this->mailer = $mailer;
     }

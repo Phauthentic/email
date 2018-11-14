@@ -25,31 +25,35 @@ namespace Phauthentic\Email;
 interface EmailInterface
 {
     // Setters
-    public function setSender(EmailAddressInterface $email) : EmailInterface;
-    public function setReplyTo(EmailAddressInterface $email) : EmailInterface;
-    public function setSubject(string $subject) : EmailInterface;
+    public function setSender(EmailAddressInterface $email): EmailInterface;
+    public function setReplyTo(EmailAddressInterface $email): EmailInterface;
+    public function setSubject(string $subject): EmailInterface;
     public function addReceiver(EmailAddressInterface $email): EmailInterface;
-    public function setReceivers(array $receivers) : EmailInterface;
+    public function setReceivers(array $receivers): EmailInterface;
     public function addCc(EmailAddressInterface $email): EmailInterface;
-    public function setCc(array $cc) : EmailInterface;
+    public function setCc(array $cc): EmailInterface;
     public function addBcc(EmailAddressInterface $email): EmailInterface;
-    public function setBcc(array $bcc) : EmailInterface;
-    public function setContentType(string $type) : EmailInterface;
-    public function setHtmlContent(string $html) : EmailInterface;
-    public function setTextContent(string $text) : EmailInterface;
+    public function setBcc(array $bcc): EmailInterface;
+    public function setContentType(string $type): EmailInterface;
+    public function setHtmlContent(string $html): EmailInterface;
+    public function setTextContent(string $text): EmailInterface;
     public function addAttachment(AttachmentInterface $attachment): EmailInterface;
     public function setPriority(int $priority): EmailInterface;
+    public function setHeaders(array $headers): EmailInterface;
+    public function setAttribute(string $name, $value): EmailInterface;
 
     // Getters
-    public function getSender() : EmailAddressInterface;
+    public function getSender(): EmailAddressInterface;
     public function getReplyTo(): ?EmailAddressInterface;
-    public function getSubject() : string;
-    public function getReceivers() : array;
-    public function getCc() : array;
-    public function getBcc() : array;
+    public function getSubject(): string;
+    public function getReceivers(): array;
+    public function getCc(): array;
+    public function getBcc(): array;
     public function getContentType() : string;
-    public function getHtmlContent() : string;
-    public function getTextContent() : string;
+    public function getHtmlContent(): ?string;
+    public function getTextContent(): ?string;
     public function getAttachments(): array;
     public function getPriority(): int;
+    public function getHeaders(): array;
+    public function getAttribute(string $name);
 }

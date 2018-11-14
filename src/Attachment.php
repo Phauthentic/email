@@ -44,9 +44,10 @@ class Attachment implements AttachmentInterface
     /**
      * @inheritDoc
      */
-    public static function fromPath(string $path): AttachmentInterface {
+    public static function fromPath(string $path): AttachmentInterface
+    {
         if (!file_exists($path)) {
-            throw new InvalidArgumentException('File does not exist');
+            throw new InvalidArgumentException(sprintf('File %s does not exist'));
         }
 
         if (!is_readable($path)) {

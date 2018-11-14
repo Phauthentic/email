@@ -32,7 +32,7 @@ class PhpMailMailer implements MailerInterface
             $receivers[] = (string)$receiver;
         }
 
-        return $this->mail(implode(' ,', $receivers), $email->getSubject(), $email->getTextContent());
+        return $this->mail(implode(' ,', $receivers), $email->getSubject(), (string)$email->getTextContent());
     }
 
     /**

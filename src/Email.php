@@ -16,9 +16,9 @@ namespace Phauthentic\Email;
 use RuntimeException;
 
 /**
- * Email Data Transfer Object
+ * Email
  *
- * This is a framework agnostic entity object that describes a single email
+ * This is a framework agnostic object that describes a single email
  */
 class Email implements EmailInterface
 {
@@ -29,12 +29,13 @@ class Email implements EmailInterface
     protected $bcc = [];
     protected $cc = [];
     protected $subject = '';
-    protected $htmlContent = '';
-    protected $textContent = '';
+    protected $htmlContent = null;
+    protected $textContent = null;
     protected $contentType = '';
     protected $attachments = [];
     protected $priority = Priority::NORMAL;
     protected $attributes = [];
+    protected $headers = [];
 
     /**
      * @inheritDoc
@@ -105,7 +106,7 @@ class Email implements EmailInterface
     /**
      * @inheritDoc
      */
-    public function setHtmlContent(string $html): EmailInterface
+    public function setHtmlContent(?string $html): EmailInterface
     {
         $this->htmlContent = $html;
 
@@ -115,7 +116,7 @@ class Email implements EmailInterface
     /**
      * @inheritDoc
      */
-    public function setTextContent(string $text): EmailInterface
+    public function setTextContent(?string $text): EmailInterface
     {
         $this->textContent = $text;
 
@@ -143,13 +144,25 @@ class Email implements EmailInterface
     }
 
     /**
-     * Set custom attributes
+     * Set custom attributes for vendor specific things if needed
      *
      * @return \Phauthentic\Email\EmailInterface
      */
     public function setAttribute(string $name, $value): EmailInterface
     {
         $this->attributes[$name] = $value;
+
+        return $this;
+    }
+
+    /**
+     * Set custom attributes
+     *
+     * @return \Phauthentic\Email\EmailInterface
+     */
+    public function setHeaders(array $headers): EmailInterface
+    {
+        $this->headers = array_merge($this->headers, $headers);
 
         return $this;
     }
@@ -213,7 +226,7 @@ class Email implements EmailInterface
     /**
      * @inheritDoc
      */
-    public function getHtmlContent(): string
+    public function getHtmlContent(): ?string
     {
         return $this->htmlContent;
     }
@@ -221,7 +234,7 @@ class Email implements EmailInterface
     /**
      * @inheritDoc
      */
-    public function getTextContent(): string
+    public function getTextContent(): ?string
     {
         return $this->textContent;
     }
@@ -327,5 +340,21 @@ class Email implements EmailInterface
         }
 
         return null;
+    }
+
+    /**
+     * Gets a custom attribute
+     *
+     * @param string $name Attribute name
+     * @return mixed
+     */
+    public function getHeaders(): array
+    {
+        return $this->headers;
+    }
+
+    public function hasHtmlAndText(): bool
+    {
+        return is_string($this->htmlContent) && is_string($this->textContent);
     }
 }

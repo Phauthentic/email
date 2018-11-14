@@ -14,6 +14,8 @@ declare(strict_types = 1);
 namespace Phauthentic\Email\Mailer;
 
 use Phauthentic\Email\EmailInterface;
+use Swift_Mailer;
+use Swift_Message;
 
 /**
  * Swift Mailer
@@ -35,7 +37,7 @@ class SwiftMailer implements MailerInterface
         $this->mailer = $mailer;
     }
 
-    public function getSwiftMessage()
+    public function getSwiftMessage(): Swift_Message
     {
         return new Swift_Message();
     }
@@ -47,14 +49,17 @@ class SwiftMailer implements MailerInterface
     {
         $message = $this->toSwiftEmail($email);
 
-        $this->mailer->send($message);
+        return (bool)$this->mailer->send($message);
     }
 
     public function toSwiftEmail(EmailInterface $email)
     {
         return (new Swift_Message($email->getSubject()))
-          ->setFrom($email->getSender()->toArray())
-          ->setTo($email->getReceivers())
+          ->setFrom(
+              $email->getSender()->getEmail(),
+              $email->getSender()->getName()
+          )
+          ->setTo((string)$email->getReceivers()[0]->getEmail(), $email->getReceivers()[0]->getName())
           ->setBody($email->getHtmlContent());
     }
 }

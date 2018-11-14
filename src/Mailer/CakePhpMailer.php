@@ -13,7 +13,7 @@ declare(strict_types = 1);
  */
 namespace Phauthentic\Email\Mailer;
 
-use Cake\Mailer\Email as CakeEamil;
+use Cake\Mailer\Email as CakeEmail;
 use Phauthentic\Email\EmailInterface;
 
 /**
@@ -36,6 +36,16 @@ class CakePhpMailer implements MailerInterface
     public function __construct(CakeEmail $cakeEmail)
     {
         $this->cakeEmail = $cakeEmail;
+    }
+
+    /**
+     *
+     */
+    public function setCakeEmail(CakeEmail $cakeEmail): MailerInterface
+    {
+        $this->cakeEmail = $cakeEmail;
+
+        return $this;
     }
 
     /**

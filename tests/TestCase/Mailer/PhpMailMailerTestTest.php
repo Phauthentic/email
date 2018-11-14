@@ -30,10 +30,11 @@ class PhpMailMailerTest extends TestCase
 			->setReceivers([
 				new EmailAddress('me@test.com', 'Its me')
 			])
-			->setSubject('Test email')
+			->setSubject('Test mailer() email')
 			->setTextContent('hellp')
 			->setHtmlContent('<p>hello!</p>');
 
-		$mailer->send($email);
+		$result = $mailer->send($email);
+		$this->assertTrue($result);
 	}
 }

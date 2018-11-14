@@ -13,44 +13,31 @@ declare(strict_types = 1);
  */
 namespace Phauthentic\Email\Test\TestCase;
 
-use Phauthentic\Email\Attachment;
 use Phauthentic\Email\Email;
 use Phauthentic\Email\EmailAddress;
-use Phauthentic\Email\Mailer\SwiftMailer;
+use Phauthentic\Email\Mailer\PhpMailMailer;
+use PHPMailer\PHPMailer\PHPMailer;
 use PHPUnit\Framework\TestCase;
-use Swift_Events_SimpleEventDispatcher;
-use Swift_Mailer;
-use Swift_SmtpTransport;
-use Swift_Transport_NullTransport;
 
 /**
- * SwiftMailerTest
+ * PhpMailMailerTest
  */
-class SwiftMailerTest extends TestCase
+class PhpMailerMailerTest extends TestCase
 {
-	/**
-	 * testSwiftMailer
-	 *
-	 * @return void
-	 */
-	public function testSwiftMailer(): void
-	{
+	public function testMailer() {
+		$phpmailer = new PHPMailer();
+
+		$mailer = new \Phauthentic\Email\Mailer\PHPMailerMailer($phpmailer);
 		$email = (new Email())
 			->setSender(new EmailAddress('me@test.com', 'Its me'))
 			->setReceivers([
 				new EmailAddress('me@test.com', 'Its me')
 			])
-			->setSubject('Test Swift mailer email')
+			->setSubject('Test mailer() email')
 			->setTextContent('hellp')
 			->setHtmlContent('<p>hello!</p>');
 
-		$transport = new Swift_SmtpTransport('127.0.0.1', 1025);
-		$swift = new Swift_Mailer($transport);
-
-		$mailer = new SwiftMailer($swift);
-
 		$result = $mailer->send($email);
-
 		$this->assertTrue($result);
 	}
 }
