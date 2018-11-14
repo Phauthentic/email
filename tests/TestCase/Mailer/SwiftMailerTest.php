@@ -28,29 +28,29 @@ use Swift_Transport_NullTransport;
  */
 class SwiftMailerTest extends TestCase
 {
-	/**
-	 * testSwiftMailer
-	 *
-	 * @return void
-	 */
-	public function testSwiftMailer(): void
-	{
-		$email = (new Email())
-			->setSender(new EmailAddress('me@test.com', 'Its me'))
-			->setReceivers([
-				new EmailAddress('me@test.com', 'Its me')
-			])
-			->setSubject('Test Swift mailer email')
-			->setTextContent('hellp')
-			->setHtmlContent('<p>hello!</p>');
+    /**
+     * testSwiftMailer
+     *
+     * @return void
+     */
+    public function testSwiftMailer(): void
+    {
+        $email = (new Email())
+            ->setSender(new EmailAddress('me@test.com', 'Its me'))
+            ->setReceivers([
+                new EmailAddress('me@test.com', 'Its me')
+            ])
+            ->setSubject('Test Swift mailer email')
+            ->setTextContent('hellp')
+            ->setHtmlContent('<p>hello!</p>');
 
-		$transport = new Swift_SmtpTransport('127.0.0.1', 1025);
-		$swift = new Swift_Mailer($transport);
+        $transport = new Swift_SmtpTransport('127.0.0.1', 1025);
+        $swift = new Swift_Mailer($transport);
 
-		$mailer = new SwiftMailer($swift);
+        $mailer = new SwiftMailer($swift);
 
-		$result = $mailer->send($email);
+        $result = $mailer->send($email);
 
-		$this->assertTrue($result);
-	}
+        $this->assertTrue($result);
+    }
 }

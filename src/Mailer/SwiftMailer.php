@@ -14,6 +14,7 @@ declare(strict_types = 1);
 namespace Phauthentic\Email\Mailer;
 
 use Phauthentic\Email\EmailInterface;
+use Swift_Attachment;
 use Swift_Mailer;
 use Swift_Message;
 
@@ -24,6 +25,8 @@ class SwiftMailer implements MailerInterface
 {
     /**
      * Swift Mailer Instance
+     *
+     * @var \Swift_Mailer
      */
     protected $mailer;
 
@@ -47,19 +50,58 @@ class SwiftMailer implements MailerInterface
      */
     public function send(EmailInterface $email): bool
     {
-        $message = $this->toSwiftEmail($email);
+        $message = $this->defaultEmail($email);
 
         return (bool)$this->mailer->send($message);
     }
 
-    public function toSwiftEmail(EmailInterface $email)
+    public function defaultEmail(EmailInterface $email)
     {
-        return (new Swift_Message($email->getSubject()))
+        $swiftMail = new Swift_Message($email->getSubject());
+        $swiftMail
           ->setFrom(
               $email->getSender()->getEmail(),
               $email->getSender()->getName()
           )
-          ->setTo((string)$email->getReceivers()[0]->getEmail(), $email->getReceivers()[0]->getName())
-          ->setBody($email->getHtmlContent());
+          ->setTo((string)$email->getReceivers()[0]->getEmail(), $email->getReceivers()[0]->getName());
+
+        foreach ($email->getAttachments() as $attachment) {
+            $swiftMail->attach(new Swift_Attachment($attachment->getFile()));
+        }
+
+        return $this->setBody($swiftMail, $email);
+   }
+
+   /**
+    * Sets the body to the email implementation
+    */
+    protected function setBody(Swift_Message $swiftMail, EmailInterface $email)
+    {
+        $text = $email->getTextContent();
+        $html = $email->getHtmlContent();
+
+        if (!empty($text) && !empty($html)) {
+            $swiftMail->setBody($html, 'text/html');
+            $swiftMail->addPart($text, 'text/plain');
+        } else {
+            if (!empty($text)) {
+                $swiftMail->setBody($text, 'text/plain');
+            }
+
+            if (!empty($html)) {
+                $swiftMail->setBody($html, 'text/html');
+            }
+        }
+
+        return $swiftMail;
     }
+
+   public function getEmail($name, $email)
+   {
+        $name = $name . 'Email';
+        if (method_exists($this, $name)) {
+            return $this->{$name}($email);
+        }
+   }
+
 }

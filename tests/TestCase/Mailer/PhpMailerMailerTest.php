@@ -24,20 +24,26 @@ use PHPUnit\Framework\TestCase;
  */
 class PhpMailerMailerTest extends TestCase
 {
-	public function testMailer() {
-		$phpmailer = new PHPMailer();
+    /**
+     * testMailer
+     *
+     * @return void
+     */
+    public function testMailer(): void
+    {
+        $phpmailer = new PHPMailer();
 
-		$mailer = new \Phauthentic\Email\Mailer\PHPMailerMailer($phpmailer);
-		$email = (new Email())
-			->setSender(new EmailAddress('me@test.com', 'Its me'))
-			->setReceivers([
-				new EmailAddress('me@test.com', 'Its me')
-			])
-			->setSubject('Test mailer() email')
-			->setTextContent('hellp')
-			->setHtmlContent('<p>hello!</p>');
+        $mailer = new \Phauthentic\Email\Mailer\PHPMailerMailer($phpmailer);
+        $email = (new Email())
+            ->setSender(new EmailAddress('me@test.com', 'Its me'))
+            ->setReceivers([
+                new EmailAddress('me@test.com', 'Its me')
+            ])
+            ->setSubject('Test mailer() email')
+            ->setTextContent('hellp')
+            ->setHtmlContent('<p>hello!</p>');
 
-		$result = $mailer->send($email);
-		$this->assertTrue($result);
-	}
+        $result = $mailer->send($email);
+        $this->assertTrue($result);
+    }
 }

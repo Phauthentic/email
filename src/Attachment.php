@@ -22,14 +22,9 @@ use RuntimeException;
 class Attachment implements AttachmentInterface
 {
     /**
-     * @var array
-     */
-    protected $data;
-
-    /**
      * @var string
      */
-    protected $path;
+    protected $file;
 
     /**
      * @var string
@@ -42,22 +37,51 @@ class Attachment implements AttachmentInterface
     protected $contentType;
 
     /**
-     * @inheritDoc
+     * Constructor
+     *
+     * @param string $file File to add
      */
-    public static function fromPath(string $path): AttachmentInterface
+    public function __construct(string $file)
     {
-        if (!file_exists($path)) {
-            throw new InvalidArgumentException(sprintf('File %s does not exist'));
+        $this->setFile($file);
+    }
+
+    /**
+     * Checks the file if it exists and is readable
+     *
+     * @param string $file File to check
+     * @return void
+     */
+    protected function checkFile($file)
+    {
+        if (!is_file($file)) {
+            throw new RuntimeException(sprintf(
+                'The file %s does not exist or is not a file',
+                $file
+            ));
         }
 
-        if (!is_readable($path)) {
-            throw new RuntimeException('File is not readable');
+        if (!is_readable($file)) {
+            throw new RuntimeException(sprintf(
+                'The file %s is not readable',
+                $file
+            ));
         }
+    }
 
-        return (new static())
-            ->setData(file_get_contents($path))
-            ->setFileName(basename($path))
-            ->setContentType(mime_content_type($path));
+    /**
+     * Sets the file
+     *
+     * @param string $file File
+     * @return \Phauthentic\Email\AttachmentInterface
+     */
+    public function setFile(string $path): AttachmentInterface
+    {
+        $this->checkFile($path);
+        $this->file = $path;
+        $this->filename = basename($path);
+
+        return $this;
     }
 
     /**
@@ -73,21 +97,7 @@ class Attachment implements AttachmentInterface
     /**
      * @inheritDoc
      */
-    public function setData($data): AttachmentInterface
-    {
-        if (is_resource($data)) {
-            if (get_resource_type($data) === 'stream') {
-                return $data->read();
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function setFileName(string $filename): AttachmentInterface
+    public function setFilename(string $filename): AttachmentInterface
     {
         $this->filename = $filename;
 
@@ -97,14 +107,7 @@ class Attachment implements AttachmentInterface
     /**
      * @inheritDoc
      */
-    public function getData() {
-        return $this->data;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getFileName(): string
+    public function getFilename(): string
     {
         return $this->filename;
     }
@@ -120,8 +123,12 @@ class Attachment implements AttachmentInterface
     /**
      * @inheritDoc
      */
-    public function getPath(): string
+    public function getFile(): string
     {
-        return $this->path;
+        if (empty($this->file)) {
+            throw new RuntimeException('No file was set');
+        }
+
+        return $this->file;
     }
 }

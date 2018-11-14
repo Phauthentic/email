@@ -6,7 +6,7 @@
 
 Most email libraries are old and don't have what we consider a good interface, also we had the case that we needed to switch the underlying implementation. This library makes it both very convenient, it offers a [fluid](https://en.wikipedia.org/wiki/Fluent_interface) and strict typed interface to build emails and sending them through any mailer you want.
 
-This library mostly implements just an email entity that is passed to a mailer that takes care of the actual email sending. It shouldn't be possible to create an email with an invalid state with this library.
+This library mostly implements just an email entity that is passed to a mailer that takes care of the actual email sending. It shouldn't be possible to create and send an email with an invalid state with this library.
 
 ## Mailers supported out of the box
 

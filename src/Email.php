@@ -260,7 +260,6 @@ class Email implements EmailInterface
     /**
      * @inheritDoc
      */
-
     public function setReplyTo(EmailAddressInterface $email): EmailInterface
     {
         $this->replyTo = $email;
@@ -281,7 +280,6 @@ class Email implements EmailInterface
     /**
      * @inheritDoc
      */
-
     public function addCc(EmailAddressInterface $email): EmailInterface
     {
         $this->cc[] = $email;

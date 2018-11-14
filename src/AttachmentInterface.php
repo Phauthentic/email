@@ -19,36 +19,33 @@ namespace Phauthentic\Email;
 interface AttachmentInterface
 {
     /**
+     * Sets the file
      *
+     * @return \Phauthentic\Email\AttachmentInterface
      */
-    public static function fromPath(string $path): AttachmentInterface;
+    public function setFile(string $path): AttachmentInterface;
 
     /**
+     * Sets the content type
+     *
      * @return \Phauthentic\Email\AttachmentInterface
      */
     public function setContentType(string $contentType): AttachmentInterface;
 
     /**
+     * Sets the filename
      *
-     */
-    public function setData($data): AttachmentInterface;
-
-    /**
      * @return string
      */
-    public function setFileName(string $filename): AttachmentInterface;
+    public function setFilename(string $filename): AttachmentInterface;
 
-    /**
-     *
-     */
-    public function getData();
 
     /**
      * Gets the filename
      *
      * @return string
      */
-    public function getFileName(): string;
+    public function getFilename(): string;
 
     /**
      * Gets the mime content type
@@ -62,5 +59,5 @@ interface AttachmentInterface
      *
      * @return string
      */
-    public function getPath(): string;
+    public function getFile(): string;
 }
