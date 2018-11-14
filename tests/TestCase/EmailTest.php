@@ -13,9 +13,11 @@ declare(strict_types = 1);
  */
 namespace Phauthentic\Email\Test\TestCase;
 
+use Phauthentic\Email\Attachment;
 use Phauthentic\Email\Email;
 use Phauthentic\Email\EmailAddress;
 use Phauthentic\Email\EmailAddressInterface;
+use Phauthentic\Email\Priority;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -30,12 +32,26 @@ class EmailTest extends TestCase
      */
     public function testEmail(): void
     {
-        $email = (new Email())
+        $email = new Email();
+        $email
             ->setSubject('Test Subject')
             ->setSender(new EmailAddress('foo@bar.com'))
+            ->setCc([
+                new EmailAddress('cc@test.com'),
+            ])
+            ->setBcc([
+                new EmailAddress('bcc@test.com'),
+                new EmailAddress('bcc2@test.com')
+            ])
             ->setTextContent('text')
             ->setHtmlContent('html')
-            ->setReceivers([new EmailAddress('bar@foo.com')]);
+            ->setReceivers([new EmailAddress('bar@foo.com')])
+            ->addAttachment(new Attachment(TESTS . 'Fixture' . DS . 'attachment.txt'))
+            ->setMessageId('messageId!')
+            ->setPriority(Priority::LOWEST)
+            ->setHeaders([
+                'foo' => 'bar'
+            ]);
 
         $this->assertEquals('Test Subject', $email->getSubject());
         $this->assertInstanceOf(EmailAddressInterface::class, $email->getSender());
@@ -46,8 +62,33 @@ class EmailTest extends TestCase
         $this->assertInternalType('array', $email->getBcc());
         $this->assertInternalType('array', $email->getcc());
         $this->assertCount(1, $email->getReceivers());
-        $this->assertCount(0, $email->getBcc());
-        $this->assertCount(0, $email->getCc());
-        $this->assertCount(0, $email->getAttachments());
+        $this->assertCount(2, $email->getBcc());
+        $this->assertCount(1, $email->getCc());
+        $this->assertCount(1, $email->getAttachments());
+        $this->assertEquals('messageId!', $email->getMessageId());
+        $this->assertEquals(Priority::LOWEST, $email->getPriority());
+        $this->assertEquals(['foo' => 'bar'],  $email->getHeaders());
+    }
+
+    /**
+     * testMissingSender
+     *
+     * @expectedException \RuntimeException
+     * @return void
+     */
+    public function testMissingSender()
+    {
+        (new Email())->getSender();
+    }
+
+    /**
+     * testMissingReceiver
+     *
+     * @expectedException \RuntimeException
+     * @return void
+     */
+    public function testMissingReceiver(): void
+    {
+        (new Email())->getReceivers();
     }
 }

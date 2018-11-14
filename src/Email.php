@@ -128,7 +128,7 @@ class Email implements EmailInterface
      */
     public function setPriority(int $priority): EmailInterface
     {
-        $this->priority;
+        $this->priority = $priority;
 
         return $this;
     }
@@ -349,10 +349,5 @@ class Email implements EmailInterface
     public function getHeaders(): array
     {
         return $this->headers;
-    }
-
-    public function hasHtmlAndText(): bool
-    {
-        return is_string($this->htmlContent) && is_string($this->textContent);
     }
 }
