@@ -1,5 +1,5 @@
 <?php
-declare(strict_types = 1);
+declare(strict_types=1);
 /**
  * Copyright (c) Phauthentic (https://github.com/Phauthentic)
  *
@@ -59,22 +59,22 @@ class SwiftMailer implements MailerInterface
     {
         $swiftMail = new Swift_Message($email->getSubject());
         $swiftMail
-          ->setFrom(
-              $email->getSender()->getEmail(),
-              $email->getSender()->getName()
-          )
-          ->setTo((string)$email->getReceivers()[0]->getEmail(), $email->getReceivers()[0]->getName());
+            ->setFrom(
+                $email->getSender()->getEmail(),
+                $email->getSender()->getName()
+            )
+            ->setTo((string)$email->getReceivers()[0]->getEmail(), $email->getReceivers()[0]->getName());
 
         foreach ($email->getAttachments() as $attachment) {
             $swiftMail->attach(new Swift_Attachment($attachment->getFile()));
         }
 
         return $this->setBody($swiftMail, $email);
-   }
+    }
 
-   /**
-    * Sets the body to the email implementation
-    */
+    /**
+     * Sets the body to the email implementation
+     */
     protected function setBody(Swift_Message $swiftMail, EmailInterface $email)
     {
         $text = $email->getTextContent();
@@ -96,12 +96,12 @@ class SwiftMailer implements MailerInterface
         return $swiftMail;
     }
 
-   public function getEmail($name, $email)
-   {
+    public function getEmail($name, $email)
+    {
         $name = $name . 'Email';
         if (method_exists($this, $name)) {
             return $this->{$name}($email);
         }
-   }
+    }
 
 }

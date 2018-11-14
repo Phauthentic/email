@@ -1,5 +1,5 @@
 <?php
-declare(strict_types = 1);
+declare(strict_types=1);
 /**
  * Copyright (c) Phauthentic (https://github.com/Phauthentic)
  *
@@ -31,7 +31,7 @@ class PHPMailerMailer implements MailerInterface
      *
      * @param \PHPMailer $mailer PHPMailer instance
      */
-    public function __construct(PHPMailer $mailer )
+    public function __construct(PHPMailer $mailer)
     {
         $this->mailer = $mailer;
     }
