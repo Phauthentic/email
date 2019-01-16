@@ -12,7 +12,11 @@ This library mostly implements just an email entity that is passed to a mailer t
 
 * Swift Mailer (recommended)
 * PHPMailer
-* *Very simple* mail() wrapper for plain text mails
+
+Other included mailers:
+* mail() Mailer - a *very* simple implementation using [mail()](http://php.net/manual/de/function.mail.php)
+* Log Mailer - for testing, requires a [PSR3](https://github.com/php-fig/log) compatible logger
+* Null Mailer - for testing
 
 ## How to use it
 
@@ -22,6 +26,8 @@ Assuming you want to use this library with the Swift mailer:
 composer require phauthentic/email
 composer require swiftmailer/swiftmailer
 ```
+
+**Be aware that the library doesn't come with a default mailer library dependency! You MUST choose one that is supported!**
 
 A *simple* example:
 
