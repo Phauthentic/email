@@ -350,4 +350,29 @@ class Email implements EmailInterface
     {
         return $this->headers;
     }
+
+    /**
+     * Returns an array representation of the email object
+     *
+     * @return array
+     */
+    public function toArray(): array
+    {
+        return [
+            'messageId' => $this->messageId,
+            'sender' => $this->sender,
+            'replyTo' => $this->replyTo,
+            'receivers' => $this->receivers,
+            'bcc' => $this->bcc,
+            'cc' => $this->cc,
+            'subject' => $this->subject,
+            'htmlContent' => $this->htmlContent,
+            'textContent' => $this->textContent,
+            'contentType' => $this->contentType,
+            'attachments' => $this->attachments,
+            'priority' => $this->priority,
+            'attributes' => $this->attributes ,
+            'headers' => $this->headers
+        ];
+    }
 }
