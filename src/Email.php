@@ -22,19 +22,64 @@ use RuntimeException;
  */
 class Email implements EmailInterface
 {
-    protected $messageId = null;
-    protected $sender = null;
-    protected $replyTo = null;
-    protected $receivers = [];
-    protected $bcc = [];
-    protected $cc = [];
+    /**
+     * @var \Phauthentic\Email\EmailAddressInterface
+     */
+    protected $sender;
+
+    /**
+     * @var \Phauthentic\Email\EmailAddressCollectionInterface
+     */
+    protected $receivers;
+
+    /**
+     * @var \Phauthentic\Email\EmailAddressCollectionInterface
+     */
+    protected $bcc ;
+
+    /**
+     * @var \Phauthentic\Email\EmailAddressCollectionInterface
+     */
+    protected $cc;
+
+    /**
+     * @var string
+     */
     protected $subject = '';
+
+    /**
+     * @var string|null
+     */
     protected $htmlContent = null;
+
+    /**
+     * @var string|null
+     */
     protected $textContent = null;
+
+    /**
+     * @var string|null
+     */
     protected $contentType = '';
+
+    /**
+     * @var array
+     */
     protected $attachments = [];
+
+    /**
+     * @var integer
+     */
     protected $priority = Priority::NORMAL;
+
+    /**
+     * @var array
+     */
     protected $attributes = [];
+
+    /**
+     * @var array
+     */
     protected $headers = [];
 
     /**
@@ -52,6 +97,10 @@ class Email implements EmailInterface
         string $textContent,
         int $priority = 3
     ) {
+        if ($receiver->count() === 0) {
+            throw new RuntimeException('You must add at least one receiver');
+        }
+
         $email = new self();
         $email->setSender($sender);
         $email->setSubject($subject);
@@ -297,7 +346,7 @@ class Email implements EmailInterface
      */
     public function addReceiver(EmailAddressInterface $email): EmailInterface
     {
-        $this->receivers[] = $email;
+        $this->receivers->add($email);
 
         return $this;
     }
@@ -307,7 +356,7 @@ class Email implements EmailInterface
      */
     public function addCc(EmailAddressInterface $email): EmailInterface
     {
-        $this->cc[] = $email;
+        $this->cc->add($email);
 
         return $this;
     }
@@ -317,7 +366,7 @@ class Email implements EmailInterface
      */
     public function addBcc(EmailAddressInterface $email): EmailInterface
     {
-        $this->bcc[] = $email;
+        $this->bcc->add($email);
 
         return $this;
     }

@@ -19,7 +19,9 @@ use Swift_Mailer;
 use Swift_Message;
 
 /**
- * Swift Mailer
+ * Swift Mailer Abstraction
+ *
+ * @link https://github.com/swiftmailer/swiftmailer
  */
 class SwiftMailer implements MailerInterface
 {
@@ -50,15 +52,40 @@ class SwiftMailer implements MailerInterface
      */
     public function send(EmailInterface $email): bool
     {
-        $message = $this->defaultEmail($email);
+        $message = $this->buildEmail($email);
 
         return (bool)$this->mailer->send($message);
     }
 
-    public function defaultEmail(EmailInterface $email)
+    /**
+     * Converts the email object to the underlying mailer implementaton
+     *
+     * @param \Phauthentic\Email\EmailInterface
+     */
+    public function buildEmail(EmailInterface $email): Swift_Message
     {
         $swiftMessage = new Swift_Message($email->getSubject());
 
+        $swiftMessage = $this->setSenderAndReceivers($swiftMessage, $email);
+        $swiftMessage = $this->setBody($swiftMessage, $email);
+        $swiftMessage = $this->setAttachments($swiftMessage, $email);
+
+        $swiftHeaders->getHeaders();
+        foreach ($email->getHeaders() as $header => $value) {
+            $swiftHeaders->addTextHeader($header, $value);
+        }
+
+        return $swiftMessage;
+    }
+
+    /**
+     * Sets the sender receiver(s) and bcc and cc
+     *
+     * @param \Swift_Message $swiftMessage
+     * @param \Phauthentic\Email\EmailInterface $email Email
+     */
+    protected function setSenderAndReceivers(Swift_Message $swiftMessage, EmailInterface $email)
+    {
         $swiftMessage
             ->setSubject($email->getSubject())
             ->setFrom(
@@ -74,9 +101,6 @@ class SwiftMailer implements MailerInterface
             $swiftMessage->attach(new Swift_Attachment($attachment->getFile()));
         }
 
-        $swiftMessage = $this->setBody($swiftMessage, $email);
-        $swiftMessage = $this->setAttachments($swiftMessage, $email);
-
         return $swiftMessage;
     }
 
@@ -88,6 +112,20 @@ class SwiftMailer implements MailerInterface
      */
     protected function setAttachments(Swift_Message $swiftMessage, EmailInterface $email)
     {
+        $attachments = $email->getAttachments();
+
+        /**
+         * @var $attachment \Phauthentic\Email\AttachmentInterface
+         */
+        foreach ($attachments as $attachment) {
+            /**
+             * @var $swiftAttachment \Swift_Attachment
+             */
+            $swiftAttachment = Swift_Attachment::fromPath($attachment->getFile());
+            $swiftAttachment->setFilename($attachment->getFilename());
+            $swiftMessage->attach($swiftAttachment);
+        }
+
         return $swiftMessage;
     }
 
@@ -117,13 +155,4 @@ class SwiftMailer implements MailerInterface
 
         return $swiftMessage;
     }
-
-    public function getEmail($name, $email)
-    {
-        $name = $name . 'Email';
-        if (method_exists($this, $name)) {
-            return $this->{$name}($email);
-        }
-    }
-
 }
