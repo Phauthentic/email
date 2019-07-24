@@ -106,11 +106,11 @@ class SwiftMailer implements MailerInterface
             $swiftMessage->setBody($html, 'text/html');
             $swiftMessage->addPart($text, 'text/plain');
         } else {
-            if (!empty($text)) {
+            if ($text !== null) {
                 $swiftMessage->setBody($text, 'text/plain');
             }
 
-            if (!empty($html)) {
+            if ($html !== null) {
                 $swiftMessage->setBody($html, 'text/html');
             }
         }

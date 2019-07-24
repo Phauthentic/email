@@ -64,7 +64,7 @@ class EmailAddress implements EmailAddressInterface
      */
     public static function create(string $email, ?string $name = null)
     {
-        if (strlen($name) === 0) {
+        if ($name !== null && strlen($name) === 0) {
             throw new RuntimeException('The receiver name cant be an empty string.');
         }
 
