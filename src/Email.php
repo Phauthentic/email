@@ -38,6 +38,35 @@ class Email implements EmailInterface
     protected $headers = [];
 
     /**
+     * Create a new email object
+     *
+     * @return $this
+     */
+    public static function create(
+        EmailAddressInterface $sender,
+        EmailAddressCollectionInterface $receiver,
+        ?EmailAddressCollectionInterface $cc,
+        ?EmailAddressCollectionInterface $bcc,
+        string $subject,
+        string $htmlContent,
+        string $textContent,
+        int $priority = 3
+    ) {
+        $email = new self();
+        $email->setSender($sender);
+        $email->setSubject($subject);
+        $email->bcc = $bcc;
+        $email->cc = $cc;
+        $email->priority = $priority;
+        $email->receivers = $receiver;
+        $email->htmlContent = $htmlContent;
+        $email->textContent = $textContent;
+        $email->priority = $priority;
+
+        return $email;
+    }
+
+    /**
      * @inheritDoc
      */
     public function setSender(EmailAddressInterface $email): EmailInterface
@@ -60,7 +89,7 @@ class Email implements EmailInterface
     /**
      * @inheritDoc
      */
-    public function setReceivers(array $receivers): EmailInterface
+    public function setReceivers(EmailAddressCollectionInterface $receivers): EmailInterface
     {
         foreach ($receivers as $receiver) {
             $this->addReceiver($receiver);
@@ -72,11 +101,9 @@ class Email implements EmailInterface
     /**
      * @inheritDoc
      */
-    public function setCc(array $cc): EmailInterface
+    public function setCc(EmailAddressCollectionInterface $cc): EmailInterface
     {
-        foreach ($cc as $carbonCopy) {
-            $this->addCc($carbonCopy);
-        }
+        $this->cc = $cc;
 
         return $this;
     }
@@ -84,11 +111,9 @@ class Email implements EmailInterface
     /**
      * @inheritDoc
      */
-    public function setBcc(array $bcc): EmailInterface
+    public function setBcc(EmailAddressCollectionInterface $bcc): EmailInterface
     {
-        foreach ($bcc as $blindCarbonCopy) {
-            $this->addBcc($blindCarbonCopy);
-        }
+        $this->bcc = $bcc;
 
         return $this;
     }
@@ -190,9 +215,9 @@ class Email implements EmailInterface
     /**
      * @inheritDoc
      */
-    public function getReceivers(): array
+    public function getReceivers(): EmailAddressCollectionInterface
     {
-        if (empty($this->receivers)) {
+        if (count($this->receivers) === 0) {
             throw new RuntimeException('You must set at least one receiver for the email');
         }
 
@@ -202,7 +227,7 @@ class Email implements EmailInterface
     /**
      * @inheritDoc
      */
-    public function getCc(): array
+    public function getCc(): EmailAddressCollectionInterface
     {
         return $this->cc;
     }
@@ -210,7 +235,7 @@ class Email implements EmailInterface
     /**
      * @inheritDoc
      */
-    public function getBcc(): array
+    public function getBcc(): EmailAddressCollectionInterface
     {
         return $this->bcc;
     }

@@ -29,11 +29,11 @@ interface EmailInterface
     public function setReplyTo(EmailAddressInterface $email): EmailInterface;
     public function setSubject(string $subject): EmailInterface;
     public function addReceiver(EmailAddressInterface $email): EmailInterface;
-    public function setReceivers(array $receivers): EmailInterface;
+    public function setReceivers(EmailAddressCollectionInterface $receivers): EmailInterface;
     public function addCc(EmailAddressInterface $email): EmailInterface;
-    public function setCc(array $cc): EmailInterface;
+    public function setCc(EmailAddressCollectionInterface $cc): EmailInterface;
     public function addBcc(EmailAddressInterface $email): EmailInterface;
-    public function setBcc(array $bcc): EmailInterface;
+    public function setBcc(EmailAddressCollectionInterface $bcc): EmailInterface;
     public function setContentType(string $type): EmailInterface;
     public function setHtmlContent(string $html): EmailInterface;
     public function setTextContent(string $text): EmailInterface;
@@ -46,9 +46,9 @@ interface EmailInterface
     public function getSender(): EmailAddressInterface;
     public function getReplyTo(): ?EmailAddressInterface;
     public function getSubject(): string;
-    public function getReceivers(): array;
-    public function getCc(): array;
-    public function getBcc(): array;
+    public function getReceivers(): EmailAddressCollectionInterface;
+    public function getCc(): EmailAddressCollectionInterface;
+    public function getBcc(): EmailAddressCollectionInterface;
     public function getContentType() : string;
     public function getHtmlContent(): ?string;
     public function getTextContent(): ?string;

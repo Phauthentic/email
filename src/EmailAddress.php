@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Phauthentic\Email;
 
 use InvalidArgumentException;
+use RuntimeException;
 
 /**
  * Email Address
@@ -23,9 +24,9 @@ class EmailAddress implements EmailAddressInterface
     /**
      * Receiver Name
      *
-     * @var string
+     * @var string|null
      */
-    protected $name = '';
+    protected $name = null;
 
     /**
      * Email
@@ -37,10 +38,43 @@ class EmailAddress implements EmailAddressInterface
     /**
      * @inheritDoc
      */
-    public function __construct(string $email, string $name = '')
+    private function __construct()
     {
-        $this->setEmail($email);
-        $this->setName($name);
+    }
+
+    /**
+     *
+     */
+    public static function fromArray(array $emailAddress)
+    {
+        $email = new self();
+        $name = null;
+
+        if (!empty(array_keys($emailAddress)[0])) {
+            $name = $email->setName((string)array_keys($emailAddress)[0]);
+        }
+
+        $email->setEmail((string)$emailAddress[array_keys($emailAddress)[0]]);
+
+        return $email;
+    }
+
+    /**
+     *
+     */
+    public static function create(string $email, ?string $name = null)
+    {
+        if (strlen($name) === 0) {
+            throw new RuntimeException('The receiver name cant be an empty string.');
+        }
+
+        $thisEmail = new self();
+        $thisEmail->setEmail($email);
+        if ($name !== null) {
+            $thisEmail->setName($name);
+        }
+
+        return $thisEmail;
     }
 
     /**
@@ -63,7 +97,7 @@ class EmailAddress implements EmailAddressInterface
     /**
      * @inheritDoc
      */
-    public function setName(string $name): EmailAddressInterface
+    public function setName(?string $name): EmailAddressInterface
     {
         $this->name = $name;
 
@@ -80,8 +114,12 @@ class EmailAddress implements EmailAddressInterface
     /**
      * @inheritDoc
      */
-    public function getName(): string
+    public function getName(): ?string
     {
+        if (empty($this->name)) {
+            return $this->email;
+        }
+
         return $this->name;
     }
 
@@ -94,7 +132,7 @@ class EmailAddress implements EmailAddressInterface
             return $this->email;
         }
 
-        return $this->email . ' <' . $this->name . '>';
+        return $this->getEmail() . ' <' . $this->getName() . '>';
     }
 
     /**

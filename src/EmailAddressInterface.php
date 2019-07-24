@@ -33,7 +33,7 @@ interface EmailAddressInterface
      * @param string $name Receiver name
      * @return \App\Infrastructure\Email\EmailAddressInterface;
      */
-    public function setName(string $name): EmailAddressInterface;
+    public function setName(?string $name): EmailAddressInterface;
 
     /**
      * Gets the email address
@@ -47,7 +47,7 @@ interface EmailAddressInterface
      *
      * @return string
      */
-    public function getName(): string;
+    public function getName(): ?string;
 
     /**
      * Returns a string representation of this object

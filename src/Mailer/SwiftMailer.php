@@ -57,43 +57,65 @@ class SwiftMailer implements MailerInterface
 
     public function defaultEmail(EmailInterface $email)
     {
-        $swiftMail = new Swift_Message($email->getSubject());
-        $swiftMail
+        $swiftMessage = new Swift_Message($email->getSubject());
+
+        $swiftMessage
+            ->setSubject($email->getSubject())
             ->setFrom(
                 $email->getSender()->getEmail(),
                 $email->getSender()->getName()
-            )
-            ->setTo((string)$email->getReceivers()[0]->getEmail(), $email->getReceivers()[0]->getName());
+            );
 
-        foreach ($email->getAttachments() as $attachment) {
-            $swiftMail->attach(new Swift_Attachment($attachment->getFile()));
+        foreach ($email->getReceivers() as $receiver) {
+            $swiftMessage->addTo($receiver->getEmail(), $receiver->getName());
         }
 
-        return $this->setBody($swiftMail, $email);
+        foreach ($email->getAttachments() as $attachment) {
+            $swiftMessage->attach(new Swift_Attachment($attachment->getFile()));
+        }
+
+        $swiftMessage = $this->setBody($swiftMessage, $email);
+        $swiftMessage = $this->setAttachments($swiftMessage, $email);
+
+        return $swiftMessage;
     }
 
     /**
      * Sets the body to the email implementation
+     *
+     * @param \Swift_Message $swiftMessage
+     * @param \Phauthentic\Email\EmailInterface $email Email
      */
-    protected function setBody(Swift_Message $swiftMail, EmailInterface $email)
+    protected function setAttachments(Swift_Message $swiftMessage, EmailInterface $email)
+    {
+        return $swiftMessage;
+    }
+
+    /**
+     * Sets the body to the email implementation
+     *
+     * @param \Swift_Message $swiftMessage
+     * @param \Phauthentic\Email\EmailInterface $email Email
+     */
+    protected function setBody(Swift_Message $swiftMessage, EmailInterface $email)
     {
         $text = $email->getTextContent();
         $html = $email->getHtmlContent();
 
-        if (!empty($text) && !empty($html)) {
-            $swiftMail->setBody($html, 'text/html');
-            $swiftMail->addPart($text, 'text/plain');
+        if ($text !== null && $html !== null) {
+            $swiftMessage->setBody($html, 'text/html');
+            $swiftMessage->addPart($text, 'text/plain');
         } else {
             if (!empty($text)) {
-                $swiftMail->setBody($text, 'text/plain');
+                $swiftMessage->setBody($text, 'text/plain');
             }
 
             if (!empty($html)) {
-                $swiftMail->setBody($html, 'text/html');
+                $swiftMessage->setBody($html, 'text/html');
             }
         }
 
-        return $swiftMail;
+        return $swiftMessage;
     }
 
     public function getEmail($name, $email)

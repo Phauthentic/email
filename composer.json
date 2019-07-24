@@ -8,7 +8,9 @@
         }
     ],
     "require": {
-        "php": "^7.1"
+        "php": "^7.1",
+        "webmozart/assert": "^1.4",
+        "psr/http-message": "^1.0"
     },
     "require-dev": {
         "psr/log": "^1.0",

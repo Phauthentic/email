@@ -15,6 +15,7 @@ namespace Phauthentic\Email;
 
 use InvalidArgumentException;
 use RuntimeException;
+use Psr\Http\Message\UploadedFileInterface;
 
 /**
  * Attachment
@@ -38,12 +39,28 @@ class Attachment implements AttachmentInterface
 
     /**
      * Constructor
-     *
-     * @param string $file File to add
      */
-    public function __construct(string $file)
+    private function __construct() {}
+
+    public static function fromUploadedFile(UploadedFileInterface $uploadedFile)
     {
-        $this->setFile($file);
+
+    }
+
+    /**
+     * Creates a new attachment from a given file
+     *
+     * @param string $file File
+     * @return \Phauthentic\Email\AttachmentInterface
+     */
+    public static function fromFile(string $file): AttachmentInterface
+    {
+        $attachment = new self();
+        $attachment->checkFile($path);
+        $attachment->file = $path;
+        $attachment->filename = basename($path);
+
+        return $attachment;
     }
 
     /**
