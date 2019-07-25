@@ -39,7 +39,7 @@ interface EmailInterface
     public function setTextContent(string $text): EmailInterface;
     public function addAttachment(AttachmentInterface $attachment): EmailInterface;
     public function setPriority(int $priority): EmailInterface;
-    public function setHeaders(array $headers): EmailInterface;
+    public function setHeaders(HeaderCollectionInterface $headers): EmailInterface;
     public function setAttribute(string $name, $value): EmailInterface;
 
     // Getters
@@ -54,6 +54,6 @@ interface EmailInterface
     public function getTextContent(): ?string;
     public function getAttachments(): array;
     public function getPriority(): int;
-    public function getHeaders(): array;
+    public function getHeaders(): HeaderCollectionInterface;
     public function getAttribute(string $name);
 }

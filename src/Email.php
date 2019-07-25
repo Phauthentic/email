@@ -78,9 +78,9 @@ class Email implements EmailInterface
     protected $attributes = [];
 
     /**
-     * @var array
+     * @var \Phauthentic\Email\HeaderCollectionInterface
      */
-    protected $headers = [];
+    protected $headers;
 
     /**
      * Create a new email object
@@ -95,7 +95,8 @@ class Email implements EmailInterface
         string $subject,
         string $htmlContent,
         string $textContent,
-        int $priority = 3
+        int $priority = 3,
+        array $headers = []
     ) {
         if ($receiver->count() === 0) {
             throw new RuntimeException('You must add at least one receiver');
@@ -111,6 +112,7 @@ class Email implements EmailInterface
         $email->htmlContent = $htmlContent;
         $email->textContent = $textContent;
         $email->priority = $priority;
+        $email->headers = new HeaderCollection($headers);
 
         return $email;
     }
@@ -234,11 +236,23 @@ class Email implements EmailInterface
      *
      * @return \Phauthentic\Email\EmailInterface
      */
-    public function setHeaders(array $headers): EmailInterface
+    public function setHeaders(HeaderCollectionInterface $headers): EmailInterface
     {
-        $this->headers = array_merge($this->headers, $headers);
+        $this->headers = $headers;
 
         return $this;
+    }
+
+    /**
+     * Duplicate Headers are allowed
+     *
+     * @param string $name Name
+     * @param string $value Value
+     * @return \Phauthentic\Email\EmailInterface
+     */
+    public function addHeader(string $name, string $value)
+    {
+        $this->headers->add(Header::create($name, $value));
     }
 
     /**
@@ -415,12 +429,11 @@ class Email implements EmailInterface
     }
 
     /**
-     * Gets a custom attribute
+     * Gets the header collection object
      *
-     * @param string $name Attribute name
-     * @return mixed
+     * @return \Phauthentic\Email\HeaderCollectionInterface
      */
-    public function getHeaders(): array
+    public function getHeaders(): HeaderCollectionInterface
     {
         return $this->headers;
     }

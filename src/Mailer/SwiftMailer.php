@@ -71,8 +71,11 @@ class SwiftMailer implements MailerInterface
         $swiftMessage = $this->setAttachments($swiftMessage, $email);
 
         $swiftHeaders = $swiftMessage->getHeaders();
-        foreach ($email->getHeaders() as $header => $value) {
-            $swiftHeaders->addTextHeader($header, $value);
+        foreach ($email->getHeaders() as $header) {
+            $swiftHeaders->addTextHeader(
+                $header->getName(),
+                $header->getValue()
+            );
         }
 
         return $swiftMessage;
