@@ -43,17 +43,29 @@ class PHPMailerMailer implements MailerInterface
     {
         $mailer = clone $this->mailer;
 
+        /**
+         * @var $sender \Phauthentic\Email\EmailInterface
+         */
         $sender = $email->getSender();
         $mailer->setFrom($sender->getEmail(), $sender->getName());
 
+        /**
+         * @var $receiver \Phauthentic\Email\HeaderInterface
+         */
         foreach ($email->getReceivers() as $receiver) {
             $mailer->addAddress($receiver->getEmail(), $receiver->getName());
         }
 
+        /**
+         * @var $receiver \Phauthentic\Email\HeaderInterface
+         */
         foreach ($email->getBcc() as $receiver) {
             $mailer->addCC($receiver->getEmail(), $receiver->getName());
         }
 
+        /**
+         * @var $receiver \Phauthentic\Email\HeaderInterface
+         */
         foreach ($email->getCc() as $receiver) {
             $mailer->addBCC($receiver->getEmail(), $receiver->getName());
         }
@@ -61,6 +73,26 @@ class PHPMailerMailer implements MailerInterface
         $mailer->Subject = $email->getSubject();
         $mailer->Body = $email->getHtmlContent();
         $mailer->AltBody = $email->getTextContent();
+
+        /**
+         * @var $attachment \Phauthentic\Email\AttachmentInterface
+         */
+        foreach ($email->getAttachments() as $attachment) {
+            $mailer->addAttachment(
+                $attachment->getPath(),
+                $attachment->getFilename()
+            );
+        }
+
+        /**
+         * @var $header \Phauthentic\Email\HeaderInterface
+         */
+        foreach ($email->getHeaders() as $header) {
+            $mailer->addCustomHeader(
+                $header->getName(),
+                $header->getValue()
+            );
+        }
 
         return $mailer->send();
     }
