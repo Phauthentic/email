@@ -22,6 +22,14 @@ namespace Phauthentic\Email;
 interface EmailAddressInterface
 {
     /**
+     * Creates a new instace
+     *
+     * @param string $email Email
+     * @param string $name Name
+     */
+    public static function create(string $email, ?string $name = null);
+
+    /**
      * Sets the email
      *
      * @param string $email Email address
@@ -63,4 +71,12 @@ interface EmailAddressInterface
      * @return array
      */
     public function toArray(): array;
+
+    /**
+     * Creates an email address from an array ['Sender Name' => 'email@adresss.com']
+     *
+     * @param array $emailAddress Email Address as array
+     * @return $this
+     */
+    public static function fromArray(array $emailAddress);
 }

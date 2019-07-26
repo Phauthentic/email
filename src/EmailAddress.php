@@ -29,7 +29,7 @@ class EmailAddress implements EmailAddressInterface
     protected $name = null;
 
     /**
-     * Email
+     * Email Address
      *
      * @var string
      */
@@ -43,10 +43,14 @@ class EmailAddress implements EmailAddressInterface
     }
 
     /**
-     *
+     * @inheritDoc
      */
     public static function fromArray(array $emailAddress)
     {
+        if (empty($emailAddress) || count($emailAddress > 1)) {
+            throw new InvalidArgumentException('The array must contain one key value pair');
+        }
+
         $email = new self();
         $name = null;
 
@@ -60,12 +64,12 @@ class EmailAddress implements EmailAddressInterface
     }
 
     /**
-     *
+     * @inheritDoc
      */
     public static function create(string $email, ?string $name = null)
     {
         if ($name !== null && strlen($name) === 0) {
-            throw new RuntimeException('The receiver name cant be an empty string.');
+            throw new InvalidArgumentException('The receiver name cant be an empty string.');
         }
 
         $thisEmail = new self();
@@ -140,7 +144,7 @@ class EmailAddress implements EmailAddressInterface
      */
     public function toArray(): array
     {
-        return [$this->getEmail() => $this->getName()];
+        return [$this->getName() => $this->getEmail()];
     }
 
     /**
