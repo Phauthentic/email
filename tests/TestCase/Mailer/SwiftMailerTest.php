@@ -16,6 +16,7 @@ namespace Phauthentic\Email\Test\TestCase;
 use Phauthentic\Email\Attachment;
 use Phauthentic\Email\Email;
 use Phauthentic\Email\EmailAddress;
+use Phauthentic\Email\EmailAddressCollection;
 use Phauthentic\Email\Mailer\SwiftMailer;
 use PHPUnit\Framework\TestCase;
 use Swift_Events_SimpleEventDispatcher;
@@ -28,6 +29,8 @@ use Swift_Transport_NullTransport;
  */
 class SwiftMailerTest extends TestCase
 {
+    use MailGeneratorTrait;
+
     /**
      * testSwiftMailer
      *
@@ -35,19 +38,20 @@ class SwiftMailerTest extends TestCase
      */
     public function testSwiftMailer(): void
     {
-        $email = (new Email())
-            ->setSender(new EmailAddress('me@test.com', 'Its me'))
-            ->setReceivers([
-                new EmailAddress('me@test.com', 'Its me')
+        $email = $this->getSimpleTestMail();
+        $transport = $this->getMockBuilder(Swift_SmtpTransport::class)->getMock();
+        $swift = $this->getMockBuilder(Swift_Mailer::class)
+            ->setConstructorArgs([$transport])
+            ->setMethods([
+                'send'
             ])
-            ->setSubject('Test Swift mailer email')
-            ->setTextContent('hellp')
-            ->setHtmlContent('<p>hello!</p>');
-
-        $transport = new Swift_SmtpTransport('127.0.0.1', 1025);
-        $swift = new Swift_Mailer($transport);
+            ->getMock();
 
         $mailer = new SwiftMailer($swift);
+
+        $swift->expects($this->atLeastOnce())
+            ->method('send')
+            ->willReturn(true);
 
         $result = $mailer->send($email);
 

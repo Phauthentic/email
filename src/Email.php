@@ -83,6 +83,11 @@ class Email implements EmailInterface
     protected $headers;
 
     /**
+     * Disable the contructor
+     */
+    private function __construct() {}
+
+    /**
      * Create a new email object
      *
      * @return $this
@@ -93,16 +98,13 @@ class Email implements EmailInterface
         ?EmailAddressCollectionInterface $cc,
         ?EmailAddressCollectionInterface $bcc,
         string $subject,
-        string $htmlContent,
         string $textContent,
+        ?string $htmlContent = null,
         int $priority = 3,
         array $headers = []
     ) {
-        if ($receiver->count() === 0) {
-            throw new RuntimeException('You must add at least one receiver');
-        }
-
         $email = new self();
+        $email->setReceivers($receiver);
         $email->setSender($sender);
         $email->setSubject($subject);
         $email->bcc = $bcc;
@@ -142,9 +144,7 @@ class Email implements EmailInterface
      */
     public function setReceivers(EmailAddressCollectionInterface $receivers): EmailInterface
     {
-        foreach ($receivers as $receiver) {
-            $this->addReceiver($receiver);
-        }
+        $this->receivers = $receivers;
 
         return $this;
     }
@@ -292,6 +292,10 @@ class Email implements EmailInterface
      */
     public function getCc(): EmailAddressCollectionInterface
     {
+        if ($this->cc === null) {
+            $this->cc = EmailAddressCollection::fromArray([]);
+        }
+
         return $this->cc;
     }
 
@@ -300,6 +304,10 @@ class Email implements EmailInterface
      */
     public function getBcc(): EmailAddressCollectionInterface
     {
+        if ($this->cc === null) {
+            $this->bcc = EmailAddressCollection::fromArray([]);
+        }
+
         return $this->bcc;
     }
 

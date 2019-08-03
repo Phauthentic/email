@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace Phauthentic\Email;
 
 use ArrayIterator;
-use InvalidArgumentException;
 
 /**
  * Email Address
@@ -27,10 +26,25 @@ class EmailAddressCollection implements EmailAddressCollectionInterface
     protected $emailAddresses = [];
 
     /**
-     * Adds an email address to the collection
-     *
-     * @param \Phauthentic\Email\EmailAddress $emailAddress
-     * @return void
+     * @inheritDoc
+     */
+    public static function fromArray(array $array): EmailAddressCollectionInterface
+    {
+        $collection = new self();
+
+        foreach ($array as $emailAddress) {
+            if (is_array($emailAddress)) {
+                $emailAddress = EmailAddress::fromArray($emailAddress);
+            }
+
+            $collection->add($emailAddress);
+        }
+
+        return $collection;
+    }
+
+    /**
+     * @inheritDoc
      */
     public function add(EmailAddress $emailAddress): void
     {
@@ -38,7 +52,7 @@ class EmailAddressCollection implements EmailAddressCollectionInterface
     }
 
     /**
-     * @return \ArrayIterator
+     * @inheritDoc
      */
     public function getIterator()
     {

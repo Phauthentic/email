@@ -13,38 +13,24 @@ declare(strict_types = 1);
  */
 namespace Phauthentic\Email\Test\TestCase;
 
-use Phauthentic\Email\Email;
-use Phauthentic\Email\EmailAddress;
-use Phauthentic\Email\EmailAddressCollection;
-use Phauthentic\Email\Mailer\PHPMailerMailer;
-use PHPMailer\PHPMailer\PHPMailer;
+use Phauthentic\Email\Mailer\NullMailer;
 use PHPUnit\Framework\TestCase;
 
 /**
- * PhpMailMailerTest
+ * NullMailerTest
  */
-class PhpMailerMailerTest extends TestCase
+class NullMailerTest extends TestCase
 {
     use MailGeneratorTrait;
 
     /**
-     * testMailer
-     *
      * @return void
      */
-    public function testMailer(): void
+    public function testMailer()
     {
         $email = $this->getSimpleTestMail();
-        $phpmailer = new PHPMailer();
-        $phpmailer = $this->getMockBuilder(PHPMailer::class)
-            ->getMock();
-        $mailer = new PHPMailerMailer($phpmailer);
-
-        $phpmailer->expects($this->atLeastOnce())
-            ->method('send')
-            ->willReturn(true);
-
+        $mailer = new NullMailer();
         $result = $mailer->send($email);
-        $this->assertTrue($result);
+        $this->assertTrue($mailer->send($email));
     }
 }

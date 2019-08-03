@@ -13,13 +13,19 @@ declare(strict_types=1);
  */
 namespace Phauthentic\Email\Mailer;
 
+use Exception;
 use Phauthentic\Email\EmailInterface;
 use RuntimeException;
 
 /**
  * Multi Mailer
  *
- * Use this to send an email to multiple mailer instances
+ * Use this to send an email to multiple mailer instances. For example you could
+ * use any real mailer and the log mailer as well.
+ *
+ * It won't stop if a mailers failed and continue with the next on in the list.
+ * This allows you also to configure multiple mailers as a fallback. send() will
+ * only return false if all mailers failed.
  */
 class MultiMailer implements MailerInterface
 {
@@ -27,6 +33,11 @@ class MultiMailer implements MailerInterface
      * @var array
      */
     protected $mailers = [];
+
+    /**
+     * @var array
+     */
+    protected $errors;
 
     /**
      * Constructor
@@ -51,17 +62,57 @@ class MultiMailer implements MailerInterface
     }
 
     /**
+     * Gets a list of errors
+     *
+     * @return array
+     */
+    public function getErrors()
+    {
+        return $this->errors;
+    }
+
+    /**
+     * @param $mailer \Phauthentic\Email\Mailer\MailerInterface Mailer
+     * @param \Exception|null $exception Exception
+     * @return void
+     */
+    protected function addError(MailerInterface $mailer, ?Exception $exception = null)
+    {
+        $this->errors[] = [
+            'class' => get_class($mailer),
+            'object' => $mailer,
+            'message' => get_class($mailer) . '::send() returned false',
+            'exception' => $exception
+        ];
+    }
+
+    /**
+     * @return bool
+     */
+    public function didAllFail(): bool
+    {
+        return count($this->mailers) === count($this->errors);
+    }
+
+    /**
      * @inheritDoc
      */
     public function send(EmailInterface $email): bool
     {
-        $status = true;
+        if (count($mailer) === 0) {
+            throw new RuntimeException('You must add at least one mailer');
+        }
+
         foreach ($this->mailers as $mailer) {
-            if (!$mailer->send($email)) {
-                $status = false;
+            try {
+                if (!$mailer->send($email)) {
+                    $this->addError($mailer);
+                }
+            } catch (Exception $exception) {
+                $this->addError($mailer, $exception);
             }
         }
 
-        return $status;
+        return count($this->mailers) !== count($this->errors);
     }
 }

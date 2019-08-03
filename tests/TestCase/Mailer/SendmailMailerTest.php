@@ -16,32 +16,34 @@ namespace Phauthentic\Email\Test\TestCase;
 use Phauthentic\Email\Email;
 use Phauthentic\Email\EmailAddress;
 use Phauthentic\Email\EmailAddressCollection;
-use Phauthentic\Email\Mailer\PHPMailerMailer;
-use PHPMailer\PHPMailer\PHPMailer;
+use Phauthentic\Email\Mailer\PhpMailMailer;
+use Phauthentic\Email\Mailer\SendmailMailer;
 use PHPUnit\Framework\TestCase;
 
 /**
  * PhpMailMailerTest
  */
-class PhpMailerMailerTest extends TestCase
+class SendmailMailerTest extends TestCase
 {
     use MailGeneratorTrait;
 
     /**
      * testMailer
      *
-     * @return void
+     * @reteurn void
      */
     public function testMailer(): void
     {
-        $email = $this->getSimpleTestMail();
-        $phpmailer = new PHPMailer();
-        $phpmailer = $this->getMockBuilder(PHPMailer::class)
+        $mailer = $this->getMockBuilder(SendmailMailer::class)
+            ->setMethods([
+                'mail'
+            ])
             ->getMock();
-        $mailer = new PHPMailerMailer($phpmailer);
 
-        $phpmailer->expects($this->atLeastOnce())
-            ->method('send')
+        $email = $email = $this->getSimpleTestMail();
+
+        $mailer->expects($this->once())
+            ->method('mail')
             ->willReturn(true);
 
         $result = $mailer->send($email);

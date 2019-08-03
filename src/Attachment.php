@@ -42,9 +42,20 @@ class Attachment implements AttachmentInterface
      */
     private function __construct() {}
 
+    /**
+     * Creates an attachment from an UploadedFileInterface
+     *
+     * @param \Psr\Http\Message\UploadedFileInterface $uploadedFile Uploaded File Interface
+     * @return $this
+     */
     public static function fromUploadedFile(UploadedFileInterface $uploadedFile)
     {
+        $attachment = new self();
+        $attachment->filename = $uploadedFile->getClientFilename();
+        $attachment->file = (string)$uploadedFile->getStream();
+        $attachment->contentType = $uploadedFile->getClientMediaType();
 
+        return $attachment;
     }
 
     /**
@@ -56,9 +67,16 @@ class Attachment implements AttachmentInterface
     public static function fromFile(string $file): AttachmentInterface
     {
         $attachment = new self();
-        $attachment->checkFile($path);
-        $attachment->file = $path;
-        $attachment->filename = basename($path);
+        $attachment->checkFile($file);
+        $attachment->file = $file;
+        $attachment->filename = basename($file);
+
+        $contentType = mime_content_type($file);
+        if (!is_string($contentType)) {
+            $contentType = null;
+        }
+
+        $attachment->contentType = $contentType;
 
         return $attachment;
     }

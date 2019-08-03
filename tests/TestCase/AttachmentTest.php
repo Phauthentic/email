@@ -29,7 +29,7 @@ class AttachmentTest extends TestCase
     public function testAttachment(): void
     {
         $file = TESTS . 'Fixture' . DS . 'attachment.txt';
-        $attachment = new Attachment($file);
+        $attachment = Attachment::fromFile($file);
 
         $this->assertEquals($file, $attachment->getFile());
         $this->assertEquals('attachment.txt', $attachment->getFilename());
@@ -46,7 +46,7 @@ class AttachmentTest extends TestCase
      */
     public function testAttachmentFileDoesNotExistException(): void
     {
-        $attachment = new Attachment('does-not-exist');
+        $attachment = Attachment::fromFile('does-not-exist');
     }
 
     /**
@@ -58,6 +58,6 @@ class AttachmentTest extends TestCase
     public function testAttachmentNoFileException(): void
     {
         $file = TESTS . 'Fixture' . DS;
-        $attachment = new Attachment($file);
+        $attachment = Attachment::fromFile($file);
     }
 }

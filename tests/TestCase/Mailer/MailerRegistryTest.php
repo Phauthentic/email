@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 /**
  * Copyright (c) Phauthentic (https://github.com/Phauthentic)
  *
@@ -11,25 +11,14 @@ declare(strict_types=1);
  * @link          https://github.com/Phauthentic
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-namespace Phauthentic\Email;
+namespace Phauthentic\Email\Test\TestCase;
+
+use PHPUnit\Framework\TestCase;
 
 /**
- * Header Interface
- *
- * This describes the methods an object that represent a single header line has
- * to implement.
+ * MailerRegistryTest
  */
-interface HeaderInterface
+class MailerRegistryTest extends TestCase
 {
-    /**
-     * Get the header name
-     *
-     * @return string
-     */
-    public function getName(): string;
-
-    /**
-     * Gets the value
-     */
-    public function getValue(): ?string;
+    
 }

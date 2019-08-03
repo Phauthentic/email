@@ -35,7 +35,7 @@ class HeaderCollection implements HeaderCollectionInterface
     public static function fromArray(array $headers): self
     {
         $self = new self();
-        foreach ($headers as $header) {
+        foreach ($headers as $name => $value) {
             $self->add(Header::create($name, $value));
         }
 

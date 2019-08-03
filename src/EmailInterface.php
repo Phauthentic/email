@@ -47,8 +47,8 @@ interface EmailInterface
     public function getReplyTo(): ?EmailAddressInterface;
     public function getSubject(): string;
     public function getReceivers(): EmailAddressCollectionInterface;
-    public function getCc(): EmailAddressCollectionInterface;
-    public function getBcc(): EmailAddressCollectionInterface;
+    public function getCc(): ?EmailAddressCollectionInterface;
+    public function getBcc(): ?EmailAddressCollectionInterface;
     public function getContentType() : string;
     public function getHtmlContent(): ?string;
     public function getTextContent(): ?string;

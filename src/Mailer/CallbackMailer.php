@@ -35,7 +35,7 @@ class CallbackMailer implements MailerInterface
     public function __construct(
         callable $callback
     ) {
-        $this->callback;
+        $this->callback = $callback;
     }
 
     /**

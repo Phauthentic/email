@@ -64,6 +64,15 @@ class EmailAddress implements EmailAddressInterface
     }
 
     /**
+     * @param string $email Email
+     * @return $this
+     */
+    public static function fromString(string $email)
+    {
+        return new self($email);
+    }
+
+    /**
      * @inheritDoc
      */
     public static function create(string $email, ?string $name = null)

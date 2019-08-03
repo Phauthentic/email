@@ -28,13 +28,14 @@ class EmailAddressTest extends TestCase
      */
     public function testEmailAddress(): void
     {
-        $address = new EmailAddress('test@test.com', 'Some Test Name');
+        $address = EmailAddress::create('test@test.com', 'Some Test Name');
+
         $this->assertEquals('Some Test Name', $address->getName());
         $this->assertEquals('test@test.com', $address->getEmail());
         $this->assertEquals('test@test.com <Some Test Name>', (string)$address);
-        $this->assertEquals(['test@test.com' => 'Some Test Name'], $address->toArray());
+        $this->assertEquals(['Some Test Name' => 'test@test.com'], $address->toArray());
 
-        $address = new EmailAddress('test@test.com');
+        $address = EmailAddress::create('test@test.com');
         $this->assertEquals('test@test.com', (string)$address);
     }
 
@@ -46,6 +47,6 @@ class EmailAddressTest extends TestCase
      */
     public function testInvalidEmailAddress(): void
     {
-        new EmailAddress('invalid!');
+        EmailAddress::create('invalid!');
     }
 }

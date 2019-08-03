@@ -47,6 +47,16 @@ class MailerRegistry
     }
 
     /**
+     * Clears all mailers from the registry
+     *
+     * @return void
+     */
+    public static function flush(): void
+    {
+        static::$mailers = [];
+    }
+
+    /**
      * @param string $name Name
      * @param \Phauthentic\Email\Mailer\MailerInterface $mailer Mailer
      * @return void
@@ -77,7 +87,7 @@ class MailerRegistry
     {
         $map = [];
         foreach (static::$mailers as $name => $object) {
-            $map[$name] = get_class($object);
+            $map[$name] = $object;
         }
 
         return $map;

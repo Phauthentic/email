@@ -31,4 +31,12 @@ interface EmailAddressCollectionInterface extends IteratorAggregate, Countable
      * @return void
      */
     public function add(EmailAddress $emailAddress): void;
+
+    /**
+     * Add multiple email addresses
+     *
+     * @param array $emailAddresses Array of Email addresses
+     * @return \Phauthentic\Email\EmailAddressCollectionInterface
+     */
+    public static function fromArray(array $emailAddresses): EmailAddressCollectionInterface;
 }

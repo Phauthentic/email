@@ -15,32 +15,41 @@ namespace Phauthentic\Email\Test\TestCase;
 
 use Phauthentic\Email\Email;
 use Phauthentic\Email\EmailAddress;
+use Phauthentic\Email\Mailer\CallbackMailer;
 use Phauthentic\Email\Mailer\PhpMailMailer;
+use PHPMailer\PHPMailer\PHPMailer;
 use PHPUnit\Framework\TestCase;
 
 /**
- * PhpMailMailerTest
+ * CallbackMailerTest
  */
-class PhpMailMailerTest extends TestCase
+class CallbackMailerTest extends TestCase
 {
-    /**
-     * testMailer
-     *
-     * @reteurn void
-     */
-    public function testMailer(): void
-    {
-        $mailer = new PhpMailMailer();
-        $email = (new Email())
-            ->setSender(new EmailAddress('me@test.com', 'Its me'))
-            ->setReceivers([
-                new EmailAddress('me@test.com', 'Its me')
-            ])
-            ->setSubject('Test mailer() email')
-            ->setTextContent('hellp')
-            ->setHtmlContent('<p>hello!</p>');
+    use MailGeneratorTrait;
 
+    /**
+     * @return void
+     */
+    public function testMailer()
+    {
+        $callable = function($mail) {
+            return true;
+        };
+
+        $email = $this->getSimpleTestMail();
+        $mailer = new CallbackMailer($callable);
         $result = $mailer->send($email);
+
         $this->assertTrue($result);
+
+        $callable = function($mail) {
+            return false;
+        };
+
+        $email = $this->getSimpleTestMail();
+        $mailer = new CallbackMailer($callable);
+        $result = $mailer->send($email);
+
+        $this->assertFalse($result);
     }
 }

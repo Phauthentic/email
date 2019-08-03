@@ -13,38 +13,35 @@ declare(strict_types = 1);
  */
 namespace Phauthentic\Email\Test\TestCase;
 
+use Phauthentic\Email\Attachment;
 use Phauthentic\Email\Email;
 use Phauthentic\Email\EmailAddress;
 use Phauthentic\Email\EmailAddressCollection;
-use Phauthentic\Email\Mailer\PHPMailerMailer;
-use PHPMailer\PHPMailer\PHPMailer;
+use Phauthentic\Email\EmailAddressInterface;
+use Phauthentic\Email\EmailInterface;
+use Phauthentic\Email\HeaderCollection;
+use Phauthentic\Email\Priority;
 use PHPUnit\Framework\TestCase;
 
 /**
- * PhpMailMailerTest
+ * MailGeneratorTrait
  */
-class PhpMailerMailerTest extends TestCase
-{
-    use MailGeneratorTrait;
-
+trait MailGeneratorTrait {
     /**
-     * testMailer
-     *
-     * @return void
+     * @return \Phauthentic\Email\EmailInterface
      */
-    public function testMailer(): void
+    protected function getSimpleTestMail(): EmailInterface
     {
-        $email = $this->getSimpleTestMail();
-        $phpmailer = new PHPMailer();
-        $phpmailer = $this->getMockBuilder(PHPMailer::class)
-            ->getMock();
-        $mailer = new PHPMailerMailer($phpmailer);
-
-        $phpmailer->expects($this->atLeastOnce())
-            ->method('send')
-            ->willReturn(true);
-
-        $result = $mailer->send($email);
-        $this->assertTrue($result);
+        return Email::create(
+            EmailAddress::create('me@test.com', 'Its me'),
+            EmailAddressCollection::fromArray([
+                EmailAddress::create('me@test.com', 'Its me')
+            ]),
+            null,
+            null,
+            'Test Swift mailer email',
+            'hello',
+            '<p>hello!</p>'
+        );
     }
 }
