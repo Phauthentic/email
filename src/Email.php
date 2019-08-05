@@ -83,6 +83,11 @@ class Email implements EmailInterface
     protected $headers;
 
     /**
+     * @var array
+     */
+    protected $options = [];
+
+    /**
      * Disable the contructor
      */
     private function __construct() {}
@@ -100,8 +105,9 @@ class Email implements EmailInterface
         string $subject,
         string $textContent,
         ?string $htmlContent = null,
-        int $priority = 3,
-        array $headers = []
+        ?int $priority = null,
+        ?HeaderCollectionInterface $headers = null,
+        ?array $options = null
     ) {
         $email = new self();
         $email->setReceivers($receiver);
@@ -113,8 +119,9 @@ class Email implements EmailInterface
         $email->receivers = $receiver;
         $email->htmlContent = $htmlContent;
         $email->textContent = $textContent;
-        $email->priority = $priority;
-        $email->headers = new HeaderCollection($headers);
+        $email->priority = $priority === null ? Priority::NORMAL : $priority;
+        $email->headers =  $headers === null ? HeaderCollection::fromArray([]) : $headers;
+        $email->options = $options;
 
         return $email;
     }

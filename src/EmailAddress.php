@@ -47,7 +47,7 @@ class EmailAddress implements EmailAddressInterface
      */
     public static function fromArray(array $emailAddress)
     {
-        if (empty($emailAddress) || count($emailAddress > 1)) {
+        if (empty($emailAddress) || count($emailAddress) > 1) {
             throw new InvalidArgumentException('The array must contain one key value pair');
         }
 

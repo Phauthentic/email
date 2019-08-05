@@ -37,6 +37,10 @@ class EmailAddressCollection implements EmailAddressCollectionInterface
                 $emailAddress = EmailAddress::fromArray($emailAddress);
             }
 
+            if (is_string($emailAddress)) {
+                $emailAddress = EmailAddress::fromString($emailAddress);
+            }
+
             $collection->add($emailAddress);
         }
 
