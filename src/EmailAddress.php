@@ -67,9 +67,18 @@ class EmailAddress implements EmailAddressInterface
      * @param string $email Email
      * @return $this
      */
-    public static function fromString(string $email)
+    public static function fromString(string $email, bool $parse = true)
     {
-        return new self($email);
+        $address = new self();
+
+        if ($parse === true && (bool)preg_match('/(.*) <(.*@.*)>$/', $email, $matches)) {
+            $address->setName($matches[1]);
+            $address->setEmail($matches[2]);
+        } else {
+            $address->setEmail($email);
+        }
+
+        return $address;
     }
 
     /**
@@ -145,7 +154,7 @@ class EmailAddress implements EmailAddressInterface
             return $this->email;
         }
 
-        return $this->getEmail() . ' <' . $this->getName() . '>';
+        return $this->getName() . ' <' . $this->getEmail() . '>';
     }
 
     /**

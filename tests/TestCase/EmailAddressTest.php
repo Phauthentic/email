@@ -32,11 +32,27 @@ class EmailAddressTest extends TestCase
 
         $this->assertEquals('Some Test Name', $address->getName());
         $this->assertEquals('test@test.com', $address->getEmail());
-        $this->assertEquals('test@test.com <Some Test Name>', (string)$address);
+        $this->assertEquals('Some Test Name <test@test.com>', (string)$address);
         $this->assertEquals(['Some Test Name' => 'test@test.com'], $address->toArray());
 
         $address = EmailAddress::create('test@test.com');
         $this->assertEquals('test@test.com', (string)$address);
+    }
+
+    /**
+     * testFromString
+     *
+     * @return void
+     */
+    public function testFromString(): void
+    {
+        $address = EmailAddress::fromString('Foo Bar <foo@bar.com>');
+        $this->assertEquals('Foo Bar', $address->getName());
+        $this->assertEquals('foo@bar.com', $address->getEmail());
+
+        $address = EmailAddress::fromString('foo@bar.com');
+        $this->assertEquals('foo@bar.com', $address->getName());
+        $this->assertEquals('foo@bar.com', $address->getEmail());
     }
 
     /**
